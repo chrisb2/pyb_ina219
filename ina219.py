@@ -1,5 +1,6 @@
 """This library supports the INA219 current and power monitor
-from Texas Instruments with a Raspberry Pi using the I2C bus."""
+from Texas Instruments with a Raspberry Pi using the I2C bus.
+"""
 import logging
 import time
 from math import trunc
@@ -102,6 +103,7 @@ class INA219:
             calculations (optional).
         """
         logging.basicConfig(level=log_level)
+        self._log = logging.getLogger("ina219")
         self._i2c = I2C(2, I2C.MASTER)
         self._address = address
         self._shunt_ohms = shunt_ohms
@@ -151,9 +153,9 @@ class INA219:
                 self._auto_gain_enabled = True
                 self._gain = self.GAIN_1_40MV
 
-        logging.info('gain set to %.2fV' % self.__GAIN_VOLTS[self._gain])
+        self._log.info('gain set to %.2fV' % self.__GAIN_VOLTS[self._gain])
 
-        logging.debug(
+        self._log.debug(
             self.__LOG_MSG_1 %
             (self._shunt_ohms, self.__BUS_RANGE[voltage_range],
              self.__GAIN_VOLTS[self._gain],
@@ -173,24 +175,28 @@ class INA219:
     def supply_voltage(self):
         """Returns the bus supply voltage in volts. This is the sum of
         the bus voltage and shunt voltage. A DeviceRangeError
-        exception is thrown if current overflow occurs."""
+        exception is thrown if current overflow occurs.
+        """
         return self.voltage() + (float(self.shunt_voltage()) / 1000)
 
     def current(self):
         """Returns the bus current in milliamps. A DeviceRangeError
-        exception is thrown if current overflow occurs."""
+        exception is thrown if current overflow occurs.
+        """
         self._handle_current_overflow()
         return self._current_register() * self._current_lsb * 1000
 
     def power(self):
         """Returns the bus power consumption in milliwatts.
-        A DeviceRangeError exception is thrown if current overflow occurs."""
+        A DeviceRangeError exception is thrown if current overflow occurs.
+        """
         self._handle_current_overflow()
         return self._power_register() * self._power_lsb * 1000
 
     def shunt_voltage(self):
         """Returns the shunt voltage in millivolts.
-        A DeviceRangeError exception is thrown if current overflow occurs."""
+        A DeviceRangeError exception is thrown if current overflow occurs.
+        """
         self._handle_current_overflow()
         return self._shunt_voltage_register() * self.__SHUNT_MILLIVOLTS_LSB
 
@@ -208,7 +214,8 @@ class INA219:
 
     def current_overflow(self):
         """Returns true if the sensor has detect current overflow. In
-        this case the current and power values are invalid."""
+        this case the current and power values are invalid.
+        """
         return self._has_current_overflow()
 
     def reset(self):
@@ -231,7 +238,7 @@ class INA219:
         return self.__GAIN_VOLTS.index(gain)
 
     def _increase_gain(self):
-        logging.info(self.__LOG_MSG_3)
+        self._log.info(self.__LOG_MSG_3)
         gain = self._read_gain()
         if gain < len(self.__GAIN_VOLTS) - 1:
             gain = gain + 1
@@ -242,7 +249,7 @@ class INA219:
             # otherwise invalid current/power readings can occur.
             time.sleep(0.001)
         else:
-            logging.info('Device limit reach, gain cannot be increased')
+            self._log.info('Device limit reach, gain cannot be increased')
             raise DeviceRangeError(self.__GAIN_VOLTS[gain], True)
 
     def _configure(self, voltage_range, gain, bus_adc, shunt_adc):
@@ -254,32 +261,32 @@ class INA219:
 
     def _calibrate(self, bus_volts_max, shunt_volts_max,
                    max_expected_amps=None):
-        logging.info(self.__LOG_MSG_2 %
-                     (bus_volts_max, shunt_volts_max,
-                      self.__max_expected_amps_to_string(max_expected_amps)))
+        self._log.info(self.__LOG_MSG_2 %
+                       (bus_volts_max, shunt_volts_max,
+                        self.__max_expected_amps_to_string(max_expected_amps)))
 
         max_possible_amps = shunt_volts_max / self._shunt_ohms
 
-        logging.info("max possible current: %.3fA" %
-                     max_possible_amps)
+        self._log.info("max possible current: %.3fA" %
+                       max_possible_amps)
 
         self._current_lsb = \
             self._determine_current_lsb(max_expected_amps, max_possible_amps)
-        logging.info("current LSB: %.3e A/bit" % self._current_lsb)
+        self._log.info("current LSB: %.3e A/bit" % self._current_lsb)
 
         self._power_lsb = self._current_lsb * 20
-        logging.info("power LSB: %.3e W/bit" % self._power_lsb)
+        self._log.info("power LSB: %.3e W/bit" % self._power_lsb)
 
         max_current = self._current_lsb * 32767
-        logging.info("max current before overflow: %.4fA" % max_current)
+        self._log.info("max current before overflow: %.4fA" % max_current)
 
         max_shunt_voltage = max_current * self._shunt_ohms
-        logging.info("max shunt voltage before overflow: %.4fmV" %
-                     (max_shunt_voltage * 1000))
+        self._log.info("max shunt voltage before overflow: %.4fmV" %
+                       (max_shunt_voltage * 1000))
 
         calibration = trunc(self.__CALIBRATION_FACTOR /
                             (self._current_lsb * self._shunt_ohms))
-        logging.info("calibration: 0x%04x (%d)" % (calibration, calibration))
+        self._log.info("calibration: 0x%04x (%d)" % (calibration, calibration))
         self._calibration_register(calibration)
 
     def _determine_current_lsb(self, max_expected_amps, max_possible_amps):
@@ -287,8 +294,8 @@ class INA219:
             if max_expected_amps > round(max_possible_amps, 3):
                 raise ValueError(self.__AMP_ERR_MSG %
                                  (max_expected_amps, max_possible_amps))
-            logging.info("max expected current: %.3fA" %
-                         max_expected_amps)
+            self._log.info("max expected current: %.3fA" %
+                           max_expected_amps)
             if max_expected_amps < max_possible_amps:
                 current_lsb = max_expected_amps / self.__CURRENT_LSB_FACTOR
             else:
@@ -301,7 +308,7 @@ class INA219:
         return current_lsb
 
     def _configuration_register(self, register_value):
-        logging.debug("configuration: 0x%04x" % register_value)
+        self._log.debug("configuration: 0x%04x" % register_value)
         self.__write_register(self.__REG_CONFIG, register_value)
 
     def _read_configuration(self):
@@ -314,7 +321,7 @@ class INA219:
     def _read_gain(self):
         configuration = self._read_configuration()
         gain = (configuration & 0x1800) >> self.__PG0
-        logging.info("gain is currently: %.2fV" % self.__GAIN_VOLTS[gain])
+        self._log.info("gain is currently: %.2fV" % self.__GAIN_VOLTS[gain])
         return gain
 
     def _configure_gain(self, gain):
@@ -322,10 +329,10 @@ class INA219:
         configuration = configuration & 0xE7FF
         self._configuration_register(configuration | (gain << self.__PG0))
         self._gain = gain
-        logging.info("gain set to: %.2fV" % self.__GAIN_VOLTS[gain])
+        self._log.info("gain set to: %.2fV" % self.__GAIN_VOLTS[gain])
 
     def _calibration_register(self, register_value):
-        logging.debug("calibration: 0x%04x" % register_value)
+        self._log.debug("calibration: 0x%04x" % register_value)
         self.__write_register(self.__REG_CALIBRATION, register_value)
 
     def _has_current_overflow(self):
@@ -353,24 +360,24 @@ class INA219:
             raise ValueError(self.__VOLT_ERR_MSG)
 
     def __write_register(self, register, register_value):
-        logging.debug(
+        self._log.debug(
             "write register 0x%02x: 0x%04x 0b%s" %
             (register, register_value,
              self.__binary_as_string(register_value)))
-        barray = self.__to_bytes(register_value)
-        self._i2c.mem_write(barray, self._address, register)
+        register_bytes = self.__to_bytes(register_value)
+        self._i2c.mem_write(register_bytes, self._address, register)
 
     def __to_bytes(self, register_value):
         return bytearray([(register_value >> 8) & 0xFF, register_value & 0xFF])
 
     def __read_register(self, register, negative_value_supported=False):
-        result = self._i2c.mem_read(2, self._address, register)
-        register_value = int.from_bytes(result, 'big')
+        register_bytes = self._i2c.mem_read(2, self._address, register)
+        register_value = int.from_bytes(register_bytes, 'big')
         if negative_value_supported:
             if register_value > 32767:
                 register_value -= 65536
 
-        logging.debug(
+        self._log.debug(
             "read register 0x%02x: 0x%04x 0b%s" %
             (register, register_value,
              self.__binary_as_string(register_value)))
@@ -387,6 +394,9 @@ class INA219:
 
 
 class DeviceRangeError(Exception):
+    """This exception is throw when the current is greater than allowed given
+    calibration of the device.
+    """
 
     __DEV_RNG_ERR = ('Current out of range (overflow), '
                      'for gain %.2fV')
