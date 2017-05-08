@@ -9,7 +9,8 @@ The functionality is currently under development and is based on my [INA219 libr
 the functionality provided in detail.
 
 If you want to give it a try then drop _ina219.py_ and [logging.py](https://github.com/micropython/micropython-lib/blob/master/logging/logging.py)
-onto the flash drive of your pyboard, then from a REPL prompt execute:
+onto the flash drive of your pyboard, connect the sensor to I2C(2) on the pyboard,
+then from a REPL prompt execute:
 
 ```python
 from ina219 import INA219
