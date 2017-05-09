@@ -9,13 +9,14 @@ The functionality is currently under development and is based on my [INA219 libr
 the functionality provided in detail.
 
 If you want to give it a try then drop _ina219.py_ and _[logging.py](https://github.com/micropython/micropython-lib/blob/master/logging/logging.py)_
-onto the flash drive of your pyboard, connect the sensor to I2C(2) on the pyboard,
-then from a REPL prompt execute:
+onto the flash drive of your pyboard, connect the sensor to the I2C(1) or I2C(2)
+interfaces on the pyboard, then from a REPL prompt execute:
 
 ```python
 from ina219 import INA219
+from pyb import I2C
 import logging
-ina = INA219(0.1, log_level=logging.INFO)
+ina = INA219(0.1, I2C(2, I2C.MASTER), log_level=logging.INFO)
 ina.configure()
 print("Bus Voltage: %.3f V" % ina.voltage())
 print("Bus Current: %.3f mA" % ina.current())

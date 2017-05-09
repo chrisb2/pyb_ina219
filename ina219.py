@@ -1,13 +1,15 @@
-"""This library supports the INA219 current and power monitor
-from Texas Instruments with a Raspberry Pi using the I2C bus.
+"""Raspberry Pi library for the INA219 sensor.
+
+This library supports the INA219 sensor from Texas Instruments with a Raspberry
+Pi using the I2C bus.
 """
 import logging
 import time
 from math import trunc
-from pyb import I2C
 
 
 class INA219:
+    """Provides all the functionality to interact with the INA21 sensor."""
 
     RANGE_16V = 0  # Range 0-16 volts
     RANGE_32V = 1  # Range 0-32 volts
@@ -88,23 +90,26 @@ class INA219:
     # to guarantee that current overflow can always be detected.
     __CURRENT_LSB_FACTOR = 32800
 
-    def __init__(self, shunt_ohms, max_expected_amps=None, address=__ADDRESS,
-                 log_level=logging.ERROR):
-        """Construct the class passing in the resistance of the shunt
-        resistor and the maximum expected current flowing through it in
-        your system.
+    def __init__(self, shunt_ohms, i2c, max_expected_amps=None,
+                 address=__ADDRESS, log_level=logging.ERROR):
+        """Construct the class.
+
+        At a minimum pass in the resistance of the shunt resistor and I2C
+        interface to which the sensor is connected.
 
         Arguments:
         shunt_ohms -- value of shunt resistor in Ohms (mandatory).
+        i2c -- an instance of the I2C class from the pyb module, either
+            I2C(1, I2C.MASTER) or I2C(2, I2C.MASTER) (mandatory).
         max_expected_amps -- the maximum expected current in Amps (optional).
-        address -- the I2C address of the INA219, defaults
-            to *0x40* (optional).
+        address -- the I2C address of the INA219, defaults to
+            *0x40* (optional).
         log_level -- set to logging.DEBUG to see detailed calibration
             calculations (optional).
         """
         logging.basicConfig(level=log_level)
         self._log = logging.getLogger("ina219")
-        self._i2c = I2C(2, I2C.MASTER)
+        self._i2c = i2c
         self._address = address
         self._shunt_ohms = shunt_ohms
         self._max_expected_amps = max_expected_amps
@@ -114,7 +119,7 @@ class INA219:
 
     def configure(self, voltage_range=RANGE_32V, gain=GAIN_AUTO,
                   bus_adc=ADC_12BIT, shunt_adc=ADC_12BIT):
-        """Configures and calibrates how the INA219 will take measurements.
+        """Configure and calibrate how the INA219 will take measurements.
 
         Arguments:
         voltage_range -- The full scale voltage range, this is either 16V
@@ -168,33 +173,37 @@ class INA219:
         self._configure(voltage_range, self._gain, bus_adc, shunt_adc)
 
     def voltage(self):
-        """Returns the bus voltage in volts."""
+        """Return the bus voltage in volts."""
         value = self._voltage_register()
         return float(value) * self.__BUS_MILLIVOLTS_LSB / 1000
 
     def supply_voltage(self):
-        """Returns the bus supply voltage in volts. This is the sum of
-        the bus voltage and shunt voltage. A DeviceRangeError
-        exception is thrown if current overflow occurs.
+        """Return the bus supply voltage in volts.
+
+        This is the sum of the bus voltage and shunt voltage. A
+        DeviceRangeError exception is thrown if current overflow occurs.
         """
         return self.voltage() + (float(self.shunt_voltage()) / 1000)
 
     def current(self):
-        """Returns the bus current in milliamps. A DeviceRangeError
-        exception is thrown if current overflow occurs.
+        """Return the bus current in milliamps.
+
+        A DeviceRangeError exception is thrown if current overflow occurs.
         """
         self._handle_current_overflow()
         return self._current_register() * self._current_lsb * 1000
 
     def power(self):
-        """Returns the bus power consumption in milliwatts.
+        """Return the bus power consumption in milliwatts.
+
         A DeviceRangeError exception is thrown if current overflow occurs.
         """
         self._handle_current_overflow()
         return self._power_register() * self._power_lsb * 1000
 
     def shunt_voltage(self):
-        """Returns the shunt voltage in millivolts.
+        """Return the shunt voltage in millivolts.
+
         A DeviceRangeError exception is thrown if current overflow occurs.
         """
         self._handle_current_overflow()
@@ -213,8 +222,9 @@ class INA219:
         time.sleep(0.00004)
 
     def current_overflow(self):
-        """Returns true if the sensor has detect current overflow. In
-        this case the current and power values are invalid.
+        """Return true if the sensor has detect current overflow.
+
+        In this case the current and power values are invalid.
         """
         return self._has_current_overflow()
 
@@ -394,7 +404,9 @@ class INA219:
 
 
 class DeviceRangeError(Exception):
-    """This exception is throw when the current is greater than allowed given
+    """This exception is throw to prevent invalid readings.
+
+    Invalid readings occur When the current is greater than allowed given
     calibration of the device.
     """
 
@@ -402,6 +414,7 @@ class DeviceRangeError(Exception):
                      'for gain %.2fV')
 
     def __init__(self, gain_volts, device_max=False):
+        """Construct the class."""
         msg = self.__DEV_RNG_ERR % gain_volts
         if device_max:
             msg = msg + ', device limit reached'
