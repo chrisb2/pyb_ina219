@@ -20,16 +20,15 @@ be minimised.
 The library has been tested with the
 [Adafruit INA219 Breakout](https://www.adafruit.com/products/904).
 
-If you want to give it a try then drop _ina219.py_ and _[logging.py](https://github.com/micropython/micropython-lib/blob/master/logging/logging.py)_
-onto the flash drive of your pyboard, connect the sensor to the I2C(1) or I2C(2)
-interfaces on the pyboard, then from a REPL prompt execute:
+If you want to give it a try then drop _ina219.py_ onto the flash drive of your
+pyboard, connect the sensor to the I2C(1) or I2C(2) interfaces on the pyboard,
+then from a REPL prompt execute:
 
 ```python
 from ina219 import INA219
 from pyb import I2C
-import logging
 
-ina = INA219(0.1, I2C(2, I2C.MASTER), log_level=logging.INFO)
+ina = INA219(0.1, I2C(2, I2C.MASTER))
 ina.configure()
 print("Bus Voltage: %.3f V" % ina.voltage())
 print("Bus Current: %.3f mA" % ina.current())
@@ -254,6 +253,9 @@ The arguments, which are all optional, are:
 * `reset()` Reset the INA219 to its default configuration.
 
 ## Debugging
+
+Add _[logging.py](https://github.com/micropython/micropython-lib/blob/master/logging/logging.py)_
+onto the flash drive in the same location as _ina219.py_ and import logging.
 
 To understand the calibration calculation results and automatic gain
 increases, informational output can be enabled with:
