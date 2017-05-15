@@ -85,7 +85,9 @@ class INA219:
     __SHUNT_MILLIVOLTS_LSB = 0.01  # 10uV
     __BUS_MILLIVOLTS_LSB = 4  # 4mV
     __CALIBRATION_FACTOR = 0.04096
-    __MAX_CALIBRATION_VALUE = 0xFFFE  # Max value supported (65534 decimal)
+    # Max value supported value (65534 decimal) of the calibration register
+    # (D0 bit is always zero, p31 of spec)
+    __MAX_CALIBRATION_VALUE = 0xFFFE
     # In the spec (p17) the current LSB factor for the minimum LSB is
     # documented as 32767, but a larger value (100.1% of 32767) is used
     # to guarantee that current overflow can always be detected.
