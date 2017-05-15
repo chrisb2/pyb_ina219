@@ -190,7 +190,7 @@ returned from a read will be the previous value taken before sleeping.
 The arguments, are:
     * shunt_ohms: The value of the shunt resistor in Ohms (mandatory).
     * i2c: an instance of the I2C class from the pyb module, either
-           I2C(1, I2C.MASTER) or I2C(2, I2C.MASTER) (mandatory).
+           _I2C(1, I2C.MASTER)_ or _I2C(2, I2C.MASTER)_ (mandatory).
     * max_expected_amps: The maximum expected current in Amps (optional).
     * address: The I2C address of the INA219, defaults to *0x40* (optional).
     * log_level: Set to _logging.INFO_ to see the detailed calibration
