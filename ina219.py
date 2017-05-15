@@ -6,31 +6,32 @@ Pi using the I2C bus.
 import logging
 import time
 from math import trunc
+from micropython import const
 
 
 class INA219:
     """Provides all the functionality to interact with the INA21 sensor."""
 
-    RANGE_16V = 0  # Range 0-16 volts
-    RANGE_32V = 1  # Range 0-32 volts
+    RANGE_16V = const(0)  # Range 0-16 volts
+    RANGE_32V = const(1)  # Range 0-32 volts
 
-    GAIN_1_40MV = 0  # Maximum shunt voltage 40mV
-    GAIN_2_80MV = 1  # Maximum shunt voltage 80mV
-    GAIN_4_160MV = 2  # Maximum shunt voltage 160mV
-    GAIN_8_320MV = 3  # Maximum shunt voltage 320mV
-    GAIN_AUTO = -1  # Determine gain automatically
+    GAIN_1_40MV = const(0)  # Maximum shunt voltage 40mV
+    GAIN_2_80MV = const(1)  # Maximum shunt voltage 80mV
+    GAIN_4_160MV = const(2)  # Maximum shunt voltage 160mV
+    GAIN_8_320MV = const(3)  # Maximum shunt voltage 320mV
+    GAIN_AUTO = const(-1)  # Determine gain automatically
 
-    ADC_9BIT = 0  # 9-bit conversion time  84us.
-    ADC_10BIT = 1  # 10-bit conversion time 148us.
-    ADC_11BIT = 2  # 11-bit conversion time 2766us.
-    ADC_12BIT = 3  # 12-bit conversion time 532us.
-    ADC_2SAMP = 9  # 2 samples at 12-bit, conversion time 1.06ms.
-    ADC_4SAMP = 10  # 4 samples at 12-bit, conversion time 2.13ms.
-    ADC_8SAMP = 11  # 8 samples at 12-bit, conversion time 4.26ms.
-    ADC_16SAMP = 12  # 16 samples at 12-bit,conversion time 8.51ms
-    ADC_32SAMP = 13  # 32 samples at 12-bit, conversion time 17.02ms.
-    ADC_64SAMP = 14  # 64 samples at 12-bit, conversion time 34.05ms.
-    ADC_128SAMP = 15  # 128 samples at 12-bit, conversion time 68.10ms.
+    ADC_9BIT = const(0)  # 9-bit conversion time  84us.
+    ADC_10BIT = const(1)  # 10-bit conversion time 148us.
+    ADC_11BIT = const(2)  # 11-bit conversion time 2766us.
+    ADC_12BIT = const(3)  # 12-bit conversion time 532us.
+    ADC_2SAMP = const(9)  # 2 samples at 12-bit, conversion time 1.06ms.
+    ADC_4SAMP = const(10)  # 4 samples at 12-bit, conversion time 2.13ms.
+    ADC_8SAMP = const(11)  # 8 samples at 12-bit, conversion time 4.26ms.
+    ADC_16SAMP = const(12)  # 16 samples at 12-bit,conversion time 8.51ms
+    ADC_32SAMP = const(13)  # 32 samples at 12-bit, conversion time 17.02ms.
+    ADC_64SAMP = const(14)  # 64 samples at 12-bit, conversion time 34.05ms.
+    ADC_128SAMP = const(15)  # 128 samples at 12-bit, conversion time 68.10ms.
 
     __ADDRESS = 0x40
 
