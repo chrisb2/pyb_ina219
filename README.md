@@ -20,7 +20,9 @@ be minimised.
 The library has been tested with the
 [Adafruit INA219 Breakout](https://www.adafruit.com/products/904).
 
-If you want to give it a try then drop _ina219.py_ onto the flash drive of your
+## Usage
+
+If you want to give it a try then copy _ina219.py_ onto the flash drive of your
 pyboard, connect the sensor to the I2C(1) or I2C(2) interfaces on the pyboard,
 then from a REPL prompt execute:
 
@@ -35,7 +37,12 @@ print("Bus Current: %.3f mA" % ina.current())
 print("Power: %.3f mW" % ina.power())
 ```
 
-## Usage
+Alternatively copy _ina219.py_ and _example.py_ to the flash drive and from the
+REPL prompt execute:
+
+```python
+execfile('example.py')
+```
 
 The address of the sensor unless otherwise specified is the default
 of _0x40_.
@@ -55,35 +62,28 @@ when a _DeviceRangeError_ exception is thrown to avoid invalid readings being ta
 
 The downside of this approach is reduced current and power resolution.
 
-
 ```python
-#!/usr/bin/env python
 from ina219 import INA219
 from ina219 import DeviceRangeError
 from pyb import I2C
 
+I2C_INTERFACE_NO = 2
 SHUNT_OHMS = 0.1
 
+ina = INA219(SHUNT_OHMS, I2C(I2C_INTERFACE_NO, I2C.MASTER))
+ina.configure()
 
-def read():
-    ina = INA219(SHUNT_OHMS, I2C(2, I2C.MASTER))
-    ina.configure()
-
-    print("Bus Voltage: %.3f V" % ina.voltage())
-    try:
-        print("Bus Current: %.3f mA" % ina.current())
-        print("Power: %.3f mW" % ina.power())
-        print("Shunt voltage: %.3f mV" % ina.shunt_voltage())
-    except DeviceRangeError as e:
-        # Current out of device range with specified shunt resister
-        print e
-
-
-if __name__ == "__main__":
-    read()
+print("Bus Voltage: %.3f V" % ina.voltage())
+try:
+    print("Bus Current: %.3f mA" % ina.current())
+    print("Power: %.3f mW" % ina.power())
+    print("Shunt voltage: %.3f mV" % ina.shunt_voltage())
+except DeviceRangeError as e:
+    # Current out of device range with specified shunt resister
+    print e
 ```
 
-### Advance - Auto Gain, High Resolution
+### Advanced - Auto Gain, High Resolution
 
 In this mode by understanding the maximum current expected in your system
 and specifying this in the script you can achieve the best possible current
@@ -98,34 +98,28 @@ As above when the maximum gain is reached, an exception is thrown to
 avoid invalid readings being taken.
 
 ```python
-#!/usr/bin/env python
 from ina219 import INA219
 from ina219 import DeviceRangeError
 from pyb import I2C
 
+I2C_INTERFACE_NO = 2
 SHUNT_OHMS = 0.1
 MAX_EXPECTED_AMPS = 0.2
 
+ina = INA219(SHUNT_OHMS, I2C(I2C_INTERFACE_NO, I2C.MASTER), MAX_EXPECTED_AMPS)
+ina.configure(ina.RANGE_16V)
 
-def read():
-    ina = INA219(SHUNT_OHMS, I2C(2, I2C.MASTER), MAX_EXPECTED_AMPS)
-    ina.configure(ina.RANGE_16V)
-
-    print("Bus Voltage: %.3f V" % ina.voltage())
-    try:
-        print("Bus Current: %.3f mA" % ina.current())
-        print("Power: %.3f mW" % ina.power())
-        print("Shunt voltage: %.3f mV" % ina.shunt_voltage())
-    except DeviceRangeError as e:
-        # Current out of device range with specified shunt resister
-        print e
-
-
-if __name__ == "__main__":
-    read()
+print("Bus Voltage: %.3f V" % ina.voltage())
+try:
+    print("Bus Current: %.3f mA" % ina.current())
+    print("Power: %.3f mW" % ina.power())
+    print("Shunt voltage: %.3f mV" % ina.shunt_voltage())
+except DeviceRangeError as e:
+    # Current out of device range with specified shunt resister
+    print e
 ```
 
-### Advance - Manual Gain, High Resolution
+### Advanced - Manual Gain, High Resolution
 
 In this mode by understanding the maximum current expected in your system
 and specifying this and the gain in the script you can always achieve the
@@ -133,30 +127,24 @@ best possible current and power resolution, at the price of missing current
 and power values if a current overflow occurs.
 
 ```python
-#!/usr/bin/env python
 from ina219 import INA219
 from ina219 import DeviceRangeError
 from pyb import I2C
 
+I2C_INTERFACE_NO = 2
 SHUNT_OHMS = 0.1
 MAX_EXPECTED_AMPS = 0.2
 
+ina = INA219(SHUNT_OHMS, I2C(2, I2C.MASTER), MAX_EXPECTED_AMPS)
+ina.configure(ina.RANGE_16V, ina.GAIN_1_40MV)
 
-def read():
-    ina = INA219(SHUNT_OHMS, I2C(2, I2C.MASTER), MAX_EXPECTED_AMPS)
-    ina.configure(ina.RANGE_16V, ina.GAIN_1_40MV)
-
-    print("Bus Voltage: %.3f V" % ina.voltage())
-    try:
-        print("Bus Current: %.3f mA" % ina.current())
-        print("Power: %.3f mW" % ina.power())
-        print("Shunt voltage: %.3f mV" % ina.shunt_voltage())
-    except DeviceRangeError as e:
-        print("Current overflow")
-
-
-if __name__ == "__main__":
-    read()
+print("Bus Voltage: %.3f V" % ina.voltage())
+try:
+    print("Bus Current: %.3f mA" % ina.current())
+    print("Power: %.3f mW" % ina.power())
+    print("Shunt voltage: %.3f mV" % ina.shunt_voltage())
+except DeviceRangeError as e:
+    print("Current overflow")
 ```
 
 ### Sensor Address
@@ -261,13 +249,13 @@ To understand the calibration calculation results and automatic gain
 increases, informational output can be enabled with:
 
 ```python
-    ina = INA219(SHUNT_OHMS, I2C(2, I2C.MASTER), log_level=logging.INFO)
+ina = INA219(SHUNT_OHMS, I2C(2, I2C.MASTER), log_level=logging.INFO)
 ```
 
 Detailed logging of device register operations can be enabled with:
 
 ```python
-    ina = INA219(SHUNT_OHMS, I2C(2, I2C.MASTER), log_level=logging.DEBUG)
+ina = INA219(SHUNT_OHMS, I2C(2, I2C.MASTER), log_level=logging.DEBUG)
 ```
 
 ## Coding Standard
