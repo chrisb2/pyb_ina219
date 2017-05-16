@@ -22,8 +22,8 @@ The library has been tested with the
 
 ## Usage
 
-If you want to give it a try then copy _ina219.py_ onto the flash drive of your
-pyboard, connect the sensor to the I2C(1) or I2C(2) interfaces on the pyboard,
+If you want to give it a try then copy _[ina219.py](https://raw.githubusercontent.com/chrisb2/pyb_ina219/master/ina219.py)_
+onto the flash drive of your pyboard, connect the sensor to the I2C(1) or I2C(2) interfaces on the pyboard,
 then from a REPL prompt execute:
 
 ```python
@@ -40,8 +40,9 @@ print("Current: %.3f mA" % ina.current())
 print("Power: %.3f mW" % ina.power())
 ```
 
-Alternatively copy _ina219.py_ and _example.py_ to the flash drive and from the
-REPL prompt execute:
+Alternatively copy _[ina219.py](https://raw.githubusercontent.com/chrisb2/pyb_ina219/master/ina219.py)_
+and _[example.py](https://raw.githubusercontent.com/chrisb2/pyb_ina219/master/example.py)_
+to the flash drive and from the REPL prompt execute:
 
 ```python
 execfile('example.py')
