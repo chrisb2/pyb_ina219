@@ -30,10 +30,13 @@ then from a REPL prompt execute:
 from ina219 import INA219
 from pyb import I2C
 
-ina = INA219(0.1, I2C(2, I2C.MASTER))
+I2C_INTERFACE_NO = 2
+SHUNT_OHMS = 0.1
+
+ina = INA219(SHUNT_OHMS, I2C(I2C_INTERFACE_NO, I2C.MASTER))
 ina.configure()
 print("Bus Voltage: %.3f V" % ina.voltage())
-print("Bus Current: %.3f mA" % ina.current())
+print("Current: %.3f mA" % ina.current())
 print("Power: %.3f mW" % ina.power())
 ```
 
@@ -242,7 +245,7 @@ The arguments, which are all optional, are:
 
 ## Debugging
 
-Add _[logging.py](https://github.com/micropython/micropython-lib/blob/master/logging/logging.py)_
+Add _[logging.py](https://raw.githubusercontent.com/micropython/micropython-lib/master/logging/logging.py)_
 onto the flash drive in the same location as _ina219.py_ and import logging.
 
 To understand the calibration calculation results and automatic gain
