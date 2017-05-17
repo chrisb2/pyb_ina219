@@ -248,7 +248,7 @@ The arguments, which are all optional, are:
 ## Performance
 
 On v1.1 pyboard reading a single 12-bit voltage in a loop, a read occurred
-approximately every 1 milliseconds.
+approximately every 500 microseconds.
 
 ## Debugging
 
