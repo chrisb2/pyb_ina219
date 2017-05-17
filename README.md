@@ -244,6 +244,12 @@ The arguments, which are all optional, are:
 * `wake()` Wake the INA219 from power down mode.
 * `reset()` Reset the INA219 to its default configuration.
 
+
+## Performance
+
+On v1.1 pyboard reading a single 12-bit voltage in a loop, a read occurred
+approximately every 1 milliseconds.
+
 ## Debugging
 
 Add _[logging.py](https://raw.githubusercontent.com/micropython/micropython-lib/master/logging/logging.py)_
