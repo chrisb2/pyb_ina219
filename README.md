@@ -247,8 +247,14 @@ The arguments, which are all optional, are:
 
 ## Performance
 
-On v1.1 pyboard reading a single 12-bit voltage in a loop, a read occurred
-approximately every 500 microseconds.
+On v1.1 pyboard reading a bus voltage in a loop, a read occurred approximately
+every 270 microseconds. Given that in _continuous_ mode a single 12-bit ADC
+conversion takes 532 microseconds (p27 of the specification) each value returned
+by the _voltage()_ function will likely be the result of a new conversion. 
+
+If multiple ADC conversions are configured (e.g. ADC_2SAMP, takes 1060 microseconds)
+then the values returned by the _voltage()_ function will often be the result of
+the same conversion and therefore identical.
 
 ## Debugging
 

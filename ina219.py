@@ -371,9 +371,8 @@ class INA219:
             raise ValueError(self.__VOLT_ERR_MSG)
 
     def __write_register(self, register, register_value):
-        self._log.debug(
-            "write register 0x%02x: 0x%04x %s",
-            register, register_value, self.__binary_as_string(register_value))
+        self.__log_register_operation("write", register, register_value)
+
         register_bytes = self.__to_bytes(register_value)
         self._i2c.mem_write(register_bytes, self._address, register)
 
@@ -384,16 +383,19 @@ class INA219:
         register_bytes = self._i2c.mem_read(2, self._address, register)
         register_value = int.from_bytes(register_bytes, 'big')
         if negative_value_supported:
+            # Two's compliment
             if register_value > 32767:
                 register_value -= 65536
 
-        self._log.debug(
-            "read register 0x%02x: 0x%04x %s",
-            register, register_value, self.__binary_as_string(register_value))
+        self.__log_register_operation("read", register, register_value)
         return register_value
 
-    def __binary_as_string(self, register_value):
-        return '{0:#018b}'.format(register_value)
+    def __log_register_operation(self, msg, register, value):
+        # performance optimisation
+        if logging._level == logging.DEBUG:
+            binary = '{0:#018b}'.format(value)
+            self._log.debug("%s register 0x%02x: 0x%04x %s",
+                            msg, register, value, binary)
 
     def __max_expected_amps_to_string(self, max_expected_amps):
         if max_expected_amps is None:
