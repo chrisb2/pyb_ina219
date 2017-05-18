@@ -33,6 +33,20 @@ class INA219:
     ADC_64SAMP = const(14)  # 64 samples at 12-bit, conversion time 34.05ms.
     ADC_128SAMP = const(15)  # 128 samples at 12-bit, conversion time 68.10ms.
 
+    __ADC_CONVERSION = {
+        ADC_9BIT: "9-bit",
+        ADC_10BIT: "10-bit",
+        ADC_11BIT: "11-bit",
+        ADC_12BIT: "12-bit",
+        ADC_2SAMP: "12-bit, 2 samples",
+        ADC_4SAMP: "12-bit, 4 samples",
+        ADC_8SAMP: "12-bit, 8 samples",
+        ADC_16SAMP: "12-bit, 16 samples",
+        ADC_32SAMP: "12-bit, 32 samples",
+        ADC_64SAMP: "12-bit, 64 samples",
+        ADC_128SAMP: "12-bit, 128 samples"
+    }
+
     __ADDRESS = 0x40
 
     __REG_CONFIG = 0x00
@@ -76,7 +90,7 @@ class INA219:
     __LOG_FORMAT = '%(asctime)s - %(levelname)s - INA219 %(message)s'
     __LOG_MSG_1 = ('shunt ohms: %.3f, bus max volts: %d, '
                    'shunt volts max: %.2f%s, '
-                   'bus ADC: %d, shunt ADC: %d')
+                   'bus ADC: %s, shunt ADC: %s')
     __LOG_MSG_2 = ('calibrate called with: bus max volts: %dV, '
                    'max shunt volts: %.2fV%s')
     __LOG_MSG_3 = ('Current overflow detected - '
@@ -168,7 +182,7 @@ class INA219:
             self._shunt_ohms, self.__BUS_RANGE[voltage_range],
             self.__GAIN_VOLTS[self._gain],
             self.__max_expected_amps_to_string(self._max_expected_amps),
-            bus_adc, shunt_adc)
+            self.__ADC_CONVERSION[bus_adc], self.__ADC_CONVERSION[shunt_adc])
 
         self._calibrate(
             self.__BUS_RANGE[voltage_range], self.__GAIN_VOLTS[self._gain],
