@@ -1,9 +1,9 @@
 # MicroPython Library for Voltage and Current Sensors Using the INA219
 
-This MicroPython library for the [pyboard](https://store.micropython.org/#/store)
-supports the [INA219](http://www.ti.com/lit/ds/symlink/ina219.pdf) voltage,
-current and power monitor sensor from Texas Instruments. The intent of the library
-is to make it easy to use the quite complex functionality of this sensor.
+This MicroPython library for the [INA219](http://www.ti.com/lit/ds/symlink/ina219.pdf)
+voltage, current and power monitor sensor from Texas Instruments. The intent of
+the library is to make it easy to use the quite complex functionality of this
+sensor.
 
 The functionality is currently under development and is based on my [INA219 library for the Raspberry Pi](https://github.com/chrisb2/pi_ina219).
 
@@ -18,7 +18,9 @@ reads are being made in a battery based system, current consumption can
 be minimised.
 
 The library has been tested with the
-[Adafruit INA219 Breakout](https://www.adafruit.com/products/904).
+[Adafruit INA219 Breakout](https://www.adafruit.com/products/904) and the
+[pyboard](https://store.micropython.org/#/store). If you successfully use this
+library with an ESP8266, WiPy, etc, please let me know.
 
 ## Usage
 
@@ -28,12 +30,12 @@ then from a REPL prompt execute:
 
 ```python
 from ina219 import INA219
-from pyb import I2C
+from machine import I2C
 
 I2C_INTERFACE_NO = 2
 SHUNT_OHMS = 0.1
 
-ina = INA219(SHUNT_OHMS, I2C(I2C_INTERFACE_NO, I2C.MASTER))
+ina = INA219(SHUNT_OHMS, I2C(I2C_INTERFACE_NO))
 ina.configure()
 print("Bus Voltage: %.3f V" % ina.voltage())
 print("Current: %.3f mA" % ina.current())
@@ -69,12 +71,12 @@ The downside of this approach is reduced current and power resolution.
 ```python
 from ina219 import INA219
 from ina219 import DeviceRangeError
-from pyb import I2C
+from machine import I2C
 
 I2C_INTERFACE_NO = 2
 SHUNT_OHMS = 0.1
 
-ina = INA219(SHUNT_OHMS, I2C(I2C_INTERFACE_NO, I2C.MASTER))
+ina = INA219(SHUNT_OHMS, I2C(I2C_INTERFACE_NO))
 ina.configure()
 
 print("Bus Voltage: %.3f V" % ina.voltage())
@@ -104,13 +106,13 @@ avoid invalid readings being taken.
 ```python
 from ina219 import INA219
 from ina219 import DeviceRangeError
-from pyb import I2C
+from machine import I2C
 
 I2C_INTERFACE_NO = 2
 SHUNT_OHMS = 0.1
 MAX_EXPECTED_AMPS = 0.2
 
-ina = INA219(SHUNT_OHMS, I2C(I2C_INTERFACE_NO, I2C.MASTER), MAX_EXPECTED_AMPS)
+ina = INA219(SHUNT_OHMS, I2C(I2C_INTERFACE_NO), MAX_EXPECTED_AMPS)
 ina.configure(ina.RANGE_16V)
 
 print("Bus Voltage: %.3f V" % ina.voltage())
@@ -133,13 +135,13 @@ and power values if a current overflow occurs.
 ```python
 from ina219 import INA219
 from ina219 import DeviceRangeError
-from pyb import I2C
+from machine import I2C
 
 I2C_INTERFACE_NO = 2
 SHUNT_OHMS = 0.1
 MAX_EXPECTED_AMPS = 0.2
 
-ina = INA219(SHUNT_OHMS, I2C(2, I2C.MASTER), MAX_EXPECTED_AMPS)
+ina = INA219(SHUNT_OHMS, I2C(I2C_INTERFACE_NO), MAX_EXPECTED_AMPS)
 ina.configure(ina.RANGE_16V, ina.GAIN_1_40MV)
 
 print("Bus Voltage: %.3f V" % ina.voltage())
@@ -156,7 +158,7 @@ except DeviceRangeError as e:
 The sensor address may be altered as follows:
 
 ```python
-ina = INA219(SHUNT_OHMS, I2C(2, I2C.MASTER), MAX_EXPECTED_AMPS, address=0x41)
+ina = INA219(SHUNT_OHMS, I2C(2), MAX_EXPECTED_AMPS, address=0x41)
 ```
 
 ### Low Power Mode
@@ -180,8 +182,8 @@ returned from a read will be the previous value taken before sleeping.
 * `INA219()` constructs the class.
 The arguments, are:
     * shunt_ohms: The value of the shunt resistor in Ohms (mandatory).
-    * i2c: an instance of the I2C class from the pyb module, either
-           _I2C(1, I2C.MASTER)_ or _I2C(2, I2C.MASTER)_ (mandatory).
+    * i2c: an instance of the I2C class from the _machine_ module, either
+           _I2C(1)_ or _I2C(2)_ (mandatory).
     * max_expected_amps: The maximum expected current in Amps (optional).
     * address: The I2C address of the INA219, defaults to *0x40* (optional).
     * log_level: Set to _logging.INFO_ to see the detailed calibration
@@ -265,13 +267,13 @@ To understand the calibration calculation results and automatic gain
 increases, informational output can be enabled with:
 
 ```python
-ina = INA219(SHUNT_OHMS, I2C(2, I2C.MASTER), log_level=logging.INFO)
+ina = INA219(SHUNT_OHMS, I2C(2), log_level=logging.INFO)
 ```
 
 Detailed logging of device register operations can be enabled with:
 
 ```python
-ina = INA219(SHUNT_OHMS, I2C(2, I2C.MASTER), log_level=logging.DEBUG)
+ina = INA219(SHUNT_OHMS, I2C(2), log_level=logging.DEBUG)
 ```
 
 ## Coding Standard

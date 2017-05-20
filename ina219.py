@@ -1,7 +1,7 @@
-"""Raspberry Pi library for the INA219 sensor.
+"""MicroPython library for the INA219 sensor.
 
-This library supports the INA219 sensor from Texas Instruments with a Raspberry
-Pi using the I2C bus.
+This library supports the INA219 sensor from Texas Instruments with
+MicroPython using the I2C bus.
 """
 import logging
 import utime
@@ -10,7 +10,7 @@ from micropython import const
 
 
 class INA219:
-    """Provides all the functionality to interact with the INA21 sensor."""
+    """Provides all the functionality to interact with the INA219 sensor."""
 
     RANGE_16V = const(0)  # Range 0-16 volts
     RANGE_32V = const(1)  # Range 0-32 volts
@@ -116,8 +116,8 @@ class INA219:
 
         Arguments:
         shunt_ohms -- value of shunt resistor in Ohms (mandatory).
-        i2c -- an instance of the I2C class from the pyb module, either
-            I2C(1, I2C.MASTER) or I2C(2, I2C.MASTER) (mandatory).
+        i2c -- an instance of the I2C class from the *machine* module, either
+            I2C(1) or I2C(2) (mandatory).
         max_expected_amps -- the maximum expected current in Amps (optional).
         address -- the I2C address of the INA219, defaults to
             *0x40* (optional).
@@ -388,13 +388,13 @@ class INA219:
         self.__log_register_operation("write", register, register_value)
 
         register_bytes = self.__to_bytes(register_value)
-        self._i2c.mem_write(register_bytes, self._address, register)
+        self._i2c.writeto_mem(self._address, register, register_bytes)
 
     def __to_bytes(self, register_value):
         return bytearray([(register_value >> 8) & 0xFF, register_value & 0xFF])
 
     def __read_register(self, register, negative_value_supported=False):
-        register_bytes = self._i2c.mem_read(2, self._address, register)
+        register_bytes = self._i2c.readfrom_mem(self._address, register, 2)
         register_value = int.from_bytes(register_bytes, 'big')
         if negative_value_supported:
             # Two's compliment

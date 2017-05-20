@@ -5,13 +5,13 @@ connected the sensor to.
 """
 
 from ina219 import INA219
-from pyb import I2C
+from machine import I2C
 
 # Edit to match interface the sensor is connect to (1 or 2).
 I2C_INTERFACE_NO = 2
 SHUNT_OHMS = 0.1
 
-ina = INA219(SHUNT_OHMS, I2C(I2C_INTERFACE_NO, I2C.MASTER))
+ina = INA219(SHUNT_OHMS, I2C(I2C_INTERFACE_NO))
 ina.configure()
 print("Bus Voltage: %.3f V" % ina.voltage())
 print("Current: %.3f mA" % ina.current())
