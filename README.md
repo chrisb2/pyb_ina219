@@ -17,7 +17,7 @@ The low power mode of the INA219 is supported, so if only occasional
 reads are being made in a battery based system, current consumption can
 be minimised.
 
-The library has been tested with the [Adafruit INA219 Breakout](https://www.adafruit.com/products/904) and the[pyboard](https://store.micropython.org/#/store), as well as a [NodeMCU (esp8266 12e) clone](http://www.dx.com/p/esp8266-esp-12e-development-board-serial-wi-fi-module-for-nodemcu-441215). For specific instructions for the esp8266, see the sub-directory.
+The library has been tested with the [Adafruit INA219 Breakout](https://www.adafruit.com/products/904) and the [pyboard](https://store.micropython.org/#/store), as well as a [NodeMCU (esp8266 12e) clone](http://www.dx.com/p/esp8266-esp-12e-development-board-serial-wi-fi-module-for-nodemcu-441215). and a [Lolin32 Lite (esp32)](https://wiki.wemos.cc/products:lolin32:lolin32_lite). For specific instructions for the esp8266 and esp32, see sub-directories.
 
 If you successfully use this library with an WiPy, etc, please let me know.
 
