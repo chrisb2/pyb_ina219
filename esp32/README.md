@@ -1,6 +1,6 @@
 # Using the Library on an ESP32
 
-Test on a Lolin32 Lite development board.
+Tested on a Lolin32 Lite development board.
 
 ## Usage
 
