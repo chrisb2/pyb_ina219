@@ -23,8 +23,7 @@ If you successfully use this library with an WiPy, etc, please let me know.
 
 ## Usage
 
-If you want to give it a try then copy _[ina219.py](https://raw.githubusercontent.com/chrisb2/pyb_ina219/master/ina219.py)_
-onto the flash drive of your pyboard, connect the sensor to the I2C(1) or I2C(2) interfaces on the pyboard,
+If you want to give it a try then copy _[ina219.py](https://raw.githubusercontent.com/chrisb2/pyb_ina219/master/ina219.py)_ and _[logging.py](https://raw.githubusercontent.com/micropython/micropython-lib/master/logging/logging.py)_ onto the flash drive of your pyboard, connect the sensor to the I2C(1) or I2C(2) interfaces on the pyboard,
 then from a REPL prompt execute:
 
 ```python
@@ -41,7 +40,7 @@ print("Current: %.3f mA" % ina.current())
 print("Power: %.3f mW" % ina.power())
 ```
 
-Alternatively copy _[ina219.py](https://raw.githubusercontent.com/chrisb2/pyb_ina219/master/ina219.py)_
+Alternatively copy _[ina219.py](https://raw.githubusercontent.com/chrisb2/pyb_ina219/master/ina219.py)_, _[logging.py](https://raw.githubusercontent.com/micropython/micropython-lib/master/logging/logging.py)_
 and _[example.py](https://raw.githubusercontent.com/chrisb2/pyb_ina219/master/example.py)_
 to the flash drive and from the REPL prompt execute:
 
@@ -259,11 +258,11 @@ the same conversion and therefore identical.
 
 ## Debugging
 
-Add _[logging.py](https://raw.githubusercontent.com/micropython/micropython-lib/master/logging/logging.py)_
-onto the flash drive in the same location as _ina219.py_ and import logging.
-
-To understand the calibration calculation results and automatic gain
-increases, informational output can be enabled with:
+Add the following to the imports
+```Python
+import logging
+```
+To understand the calibration calculation results and automatic gain increases, informational output can be enabled with:
 
 ```python
 ina = INA219(SHUNT_OHMS, I2C(2), log_level=logging.INFO)
