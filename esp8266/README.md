@@ -24,4 +24,4 @@ print("Power: %.3f mW" % ina.power())
 
 ## Frozen Byte Code
 
-This directory contains two frozen byte code modules; _ina219.mpy_ and _logging.mpy_ compiled with v1.9.1 of the [micropython esp8266 tool chain](https://github.com/micropython/micropython/tree/master/esp8266). Copy these to the flash drive of your esp8266 in place of the source code modules, _logging.mpy_ is only required if you want to see log output. Restart the esp8266.
+This directory contains two frozen byte code modules; _ina219.mpy_ and _logging.mpy_ compiled with v1.9.1 of the [micropython esp8266 tool chain](https://github.com/micropython/micropython/tree/master/ports/esp8266). Copy these to the flash drive of your esp8266 in place of the source code modules, _logging.mpy_ is only required if you want to see log output. Restart the esp8266.
