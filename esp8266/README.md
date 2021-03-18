@@ -1,6 +1,6 @@
 # Using the Library on an ESP8266
 
-On the NodeMCU clone I used to test with I got an out of memory error when trying to import the _ina219_ module, this is due to there being insufficient RAM to compile this module to byte code. If you encounter this issue then you can use the frozen byte code as explained below.
+On the NodeMCU clone I used to test with I got an out of memory error when trying to import the _ina219_ module, this is due to there being insufficient RAM to compile this module to byte code. If you encounter this issue then you can use [mpy-cross](https://github.com/micropython/micropython/tree/master/mpy-cross) to create a .mpy file.
 
 ## Usage
 
