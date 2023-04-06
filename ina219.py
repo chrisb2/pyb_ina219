@@ -406,7 +406,7 @@ class INA219:
 
     def __log_register_operation(self, msg, register, value):
         # performance optimisation
-        if logging._level == logging.DEBUG:
+        if self._log.level == logging.DEBUG:
             binary = '{0:#018b}'.format(value)
             self._log.debug("%s register 0x%02x: 0x%04x %s",
                             msg, register, value, binary)
