@@ -124,8 +124,8 @@ class INA219:
         log_level -- set to logging.DEBUG to see detailed calibration
             calculations (optional).
         """
-        logging.basicConfig(level=log_level)
         self._log = logging.getLogger("ina219")
+        self._log.setLevel(log_level)
         self._i2c = i2c
         self._address = address
         self._shunt_ohms = shunt_ohms
