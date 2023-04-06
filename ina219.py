@@ -124,8 +124,8 @@ class INA219:
         log_level -- set to logging.DEBUG to see detailed calibration
             calculations (optional).
         """
-        logging.basicConfig(level=log_level)
         self._log = logging.getLogger("ina219")
+        self._log.setLevel(log_level)
         self._i2c = i2c
         self._address = address
         self._shunt_ohms = shunt_ohms
@@ -406,7 +406,7 @@ class INA219:
 
     def __log_register_operation(self, msg, register, value):
         # performance optimisation
-        if logging._level == logging.DEBUG:
+        if self._log.level == logging.DEBUG:
             binary = '{0:#018b}'.format(value)
             self._log.debug("%s register 0x%02x: 0x%04x %s",
                             msg, register, value, binary)
