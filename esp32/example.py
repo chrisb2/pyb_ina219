@@ -1,3 +1,4 @@
+"""Example script for ESP32."""
 from machine import Pin, I2C
 from ina219 import INA219
 from logging import INFO
