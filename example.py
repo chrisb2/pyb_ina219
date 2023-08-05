@@ -1,4 +1,4 @@
-"""Example script.
+"""Example script for Pyboard v1.1.
 
 Edit the I2C interface constant to match the one you have
 connected the sensor to.

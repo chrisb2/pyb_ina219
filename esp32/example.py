@@ -1,10 +1,11 @@
+"""Example script for ESP32."""
 from machine import Pin, I2C
 from ina219 import INA219
 from logging import INFO
 
 SHUNT_OHMS = 0.1
 
-i2c = I2C(-1, Pin(17), Pin(16))
+i2c = I2C(1, scl=Pin(16), sda=Pin(17))
 ina = INA219(SHUNT_OHMS, i2c, log_level=INFO)
 ina.configure()
 

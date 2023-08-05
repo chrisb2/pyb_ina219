@@ -1,0 +1,1 @@
+This directory contains a copy of the standard Micropython unittest module [\_\_init\_\_.py](https://github.com/micropython/micropython-lib/blob/master/python-stdlib/unittest/unittest/__init__.py). 
