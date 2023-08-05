@@ -274,6 +274,28 @@ Detailed logging of device register operations can be enabled with:
 ina = INA219(SHUNT_OHMS, I2C(2), log_level=logging.DEBUG)
 ```
 
+## Unit Testing
+
+Some basic unit tests are provided which do not require an ina219 sensor to be connected.
+
+Copy all the files in the _test_ and _unittest_ directories to matching directories on the device. From the REPL prompt run the tests with:
+```python
+import unittest
+unittest.main("tests")
+```
+The result should be:
+```
+test_default (tests.TestConstructor) ... ok
+test_with_max_expected_amps (tests.TestConstructor) ... ok
+test_read_32v (tests.TestRead) ... ok
+test_read_16v (tests.TestRead) ... ok
+test_read_4_808v (tests.TestRead) ... ok
+----------------------------------------------------------------------
+Ran 5 tests
+
+OK
+<unittest.result.TestResult run=5 errors=0 failures=0>
+```
 ## Coding Standard
 
 This library adheres to the *PEP8* standard and follows the *idiomatic*
